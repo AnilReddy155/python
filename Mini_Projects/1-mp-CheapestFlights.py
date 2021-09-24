@@ -35,20 +35,14 @@ def search_flight():
 
     print(f"URL: {url}")
     print("The cheapest flights: \n")
-    # r = requests.get(url)
     driver = webdriver.Safari()
     driver.get(url)
-    # print(driver.page_source[:500])
     time.sleep(10)
-    # depa_time = driver.find_element_by_xpath("//span[@data-test-id='departure-time')]")
-    # print(depa_time)
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     
-    driver.quit() 
+    driver.quit()
 
-    # offer_list = soup.find_all('li', attrs={'data-test-id': 'offer-listing'})
     # Getting all the data from the website using html elements and tags.
-
     departure_time = soup.find_all('span', attrs={'data-test-id': 'departure-time'}) 
     arrival_departure = soup.find_all('div', attrs={'data-test-id': 'arrival-departure'}) 
     journey_duration = soup.find_all('div', attrs={'data-test-id': 'journey-duration'})
