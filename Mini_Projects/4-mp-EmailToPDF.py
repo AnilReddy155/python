@@ -6,9 +6,11 @@ import os
 
 from fpdf import FPDF
 import traceback
+import stdiomask
 
 USER_EMAIL = input('User Email: ')
-FROM_PWD = input('Password: ')  
+
+FROM_PWD = stdiomask.getpass() 
 FROM_MAIL = input('From Mail : ')
 # FROM_EMAIL = 'reddyanil1445@gmail.com'
 # FROM_PWD = 'password'
@@ -114,8 +116,9 @@ def read_email_from_gmail():
         mail_con.close()
         mail_con.logout()
     except Exception as e:
-        print(e.with_traceback(e))
-        mail_con.logout()
+        print(e)
+        if(mail_con is not None):
+            mail_con.logout()
         pass 
         
 
