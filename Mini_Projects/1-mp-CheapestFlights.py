@@ -24,44 +24,62 @@ def popup(msg):
 def search_flight():
       
   try:
-    from_loc = e1.get()
-    to_loc = e2.get()
-    date = e3.get() 
+    # from_loc = e1.get()
+    # to_loc = e2.get()
+    # date = e3.get() 
     # print(from_loc)
-    # from_loc = input("Enter Source : ")
-    # to_loc = input("Enter Destination : ")
-    # date = input("")
-    url = "https://www.expedia.ie/Flights-Search?trip=oneway&leg1=from:"+from_loc+",to:"+to_loc+",departure:"+date+"TANYT&passengers=adults:1,children:0,seniors:0,infantinlap:Y&options=cabinclass:economy&mode=search&origref=www.expedia.ie"
+    from_loc = "chennai" #input("Enter Source : ")
+    to_loc = "bangalore" #input("Enter Destination : ")
+    date = "30/09/2021" #input("")
+    #url = "https://www.expedia.ie/Flights-Search?trip=oneway&leg1=from:"+from_loc+",to:"+to_loc+",departure:"+date+"TANYT&passengers=adults:1,children:0,seniors:0,infantinlap:Y&options=cabinclass:economy&mode=search&origref=www.expedia.ie"
 
+    url = "https://www.expedia.co.in/Flights-Search?trip=oneway&leg1=from:" + from_loc + ",to:" + to_loc + ",departure:" + date + "TANYT&passengers=adults:1,children:0,seniors:0,infantinlap:Y&options=cabinclass:economy&mode=search"
     print(f"URL: {url}")
     print("The cheapest flights: \n")
+    # r = requests.get(url)
     driver = webdriver.Safari()
     driver.get(url)
-    time.sleep(10)
-    soup = BeautifulSoup(driver.page_source, 'html.parser')
-    
-    driver.quit()
+    time.sleep(5)
+    depa_time = driver.find_elements_by_xpath("//span[contains(@data-test-id,'departure-time')]")
+    departure_time_list = [a.text for a in depa_time]
 
+    arrival_departure = driver.find_elements_by_xpath("//div[contains(@data-test-id,'arrival-departure')]")
+    arrival_departure_list = [a.text for a in arrival_departure]
+
+    journey_duration = driver.find_elements_by_xpath("//div[contains(@data-test-id,'journey-duration')]")
+    journey_duration_list = [a.text for a in journey_duration]
+
+    price_column = driver.find_elements_by_xpath("//div[contains(@data-test-id,'price-column')]")
+    price_column_list = [a.text for a in price_column]
+    print(departure_time_list)
+    print(arrival_departure_list)
+    print(journey_duration_list)
+    print(price_column_list)
+    
+    # fetching data using BeautifulSoup
+    #soup = BeautifulSoup(driver.page_source, 'html.parser')
     # Getting all the data from the website using html elements and tags.
-    departure_time = soup.find_all('span', attrs={'data-test-id': 'departure-time'}) 
-    arrival_departure = soup.find_all('div', attrs={'data-test-id': 'arrival-departure'}) 
-    journey_duration = soup.find_all('div', attrs={'data-test-id': 'journey-duration'})
-    price_column = soup.find_all('div', attrs={'data-test-id': 'price-column'})
+
+    # departure_time = soup.find_all('span', attrs={'data-test-id': 'departure-time'}) 
+    # arrival_departure = soup.find_all('div', attrs={'data-test-id': 'arrival-departure'}) 
+    # journey_duration = soup.find_all('div', attrs={'data-test-id': 'journey-duration'})
+    # price_column = soup.find_all('div', attrs={'data-test-id': 'price-column'})
 
     # Cleaning up the data, such as getting only text and removing whitespace. This all gets stored in list using list comprehension.
-    departure_time_list = [a.getText().strip() for a in departure_time]
-    arrival_departure_list = [a.getText().strip() for a in arrival_departure]
-    journey_duration_list = [b.getText().strip() for b in journey_duration]
+    # departure_time_list = [a.getText().strip() for a in departure_time]
+    # arrival_departure_list = [a.getText().strip() for a in arrival_departure]
+    # journey_duration_list = [b.getText().strip() for b in journey_duration]
     price_column_list = []
     for pr in price_column:
-        p = str(pr.getText().strip())
-        price = p[p.find('€')+1 : p.find('€',p.find('€', p.find('€')+1))]
-        price_column_list.append(price)
-
+        p = str(pr.text)
+        price = p[p.find('Rs')+1 : p.find('Rs',p.find('Rs', p.find('Rs')+1))]
+        price_column_list.append('R'+price)
+    
     if len(departure_time_list) == 0 :
         print("Flights are not available at this moment...... ")
         return
-
+    driver.quit()
+    #Adding all data to Dictionary
     flights = {"arrival - departure": arrival_departure_list,
               "departure_time" : departure_time_list,    
                "journey_duration": journey_duration_list,
@@ -74,13 +92,14 @@ def search_flight():
     flights_data.to_excel("output.xlsx", index=None)
   
     print(flights_data)
+    
     msg="Flights data downloaded successful !! \n"
     popup(msg)
-    
+   
   except Exception as e: 
-    print(e.with_traceback())
-    popup("Error While Fetching Data....") 
     print(e)
+    popup("Error While Fetching Data....") 
+    
     pass
 
 root = tk.Tk()
