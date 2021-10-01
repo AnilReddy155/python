@@ -24,13 +24,13 @@ def popup(msg):
 def search_flight():
       
   try:
-    # from_loc = e1.get()
-    # to_loc = e2.get()
-    # date = e3.get() 
+    from_loc = e1.get()
+    to_loc = e2.get()
+    date = e3.get() 
     # print(from_loc)
-    from_loc = "chennai" #input("Enter Source : ")
-    to_loc = "bangalore" #input("Enter Destination : ")
-    date = "30/09/2021" #input("")
+    # from_loc = "chennai" #input("Enter Source : ")
+    # to_loc = "bangalore" #input("Enter Destination : ")
+    # date = "30/09/2021" #input("")
     #url = "https://www.expedia.ie/Flights-Search?trip=oneway&leg1=from:"+from_loc+",to:"+to_loc+",departure:"+date+"TANYT&passengers=adults:1,children:0,seniors:0,infantinlap:Y&options=cabinclass:economy&mode=search&origref=www.expedia.ie"
 
     url = "https://www.expedia.co.in/Flights-Search?trip=oneway&leg1=from:" + from_loc + ",to:" + to_loc + ",departure:" + date + "TANYT&passengers=adults:1,children:0,seniors:0,infantinlap:Y&options=cabinclass:economy&mode=search"
